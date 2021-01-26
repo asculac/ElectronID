@@ -1,5 +1,5 @@
-# EgmIDTraining
-The tools to train BDT Electron and Photon Identifications for CMS.
+# EgammaMVA
+The tools to train electron and photon ID.
 
 ## Requirements
 
@@ -12,32 +12,32 @@ This toolkit requires the __xgbo package__ to be installed:
 
 The procedure splits up in a few fundamental steps:
 
-1. Make training ntuple with CMSSW
-2. Train the ID with xgboost
-3. Determine working points
-4. Generate configuration files to integrate ID in CMSSW
-5. Make validation ntuple with CMSSW
-6. Draw performance plots and generate summary slides
+1. Make training ntuple with CMSSW.
+2. Train the ID with XGBoost.
+3. Determine working points.
+4. Generate configuration files to integrate ID into CMSSW.
+5. Make validation ntuple with CMSSW.
+6. Draw performance plots and generate summary slides.
 
 Only step 1 and 4 require interaction with CMSSW, the other steps can be done offline.
 
 ### Step 0 - Clone this repository and tweak the configuration
 
-Adapt the configuration in `config.py` to your needs. Right now, the configuration system is messy and incomplete, but this will be improved.
+Adapt the configuration in `config.py` to your needs.
 
-### Step 1 - Making Ntuples for Training
+### Step 1 - Make training Ntuples
 
-Start by setting up the CMSSW area (you might want to change the release name):
+Start by setting up the CMSSW area e.g. CMSSW_10_3_1:
 
-* `scram project CMSSW_10_1_0`
-* `cd CMSSW_10_1_0/src`
+* `cmsrel CMSSW_10_3_1`
+* `cd CMSSW_10_3_1/src`
 * `cmsenv`
 
 Checkout the needed packages:
 
 * `git cms-addpkg RecoEgamma/ElectronIdentification`
 
-Make sure to have crab in your environment and launch the job to ntuplize the sample you configured for the training:
+Make sure you have crab in your environment and launch the job to ntuplize the sample you configured for the training:
 
 * `python submit_ntuplizer.py --train`
 
@@ -45,7 +45,7 @@ When the job is done, you should merge the crab output files to one nice root fi
 
 * `python merge_ntuple.py --train`
 
-### Step 2 - Train the ID with xgboost
+### Step 2 - Train the ID with XGBoost
 
 Launch the training with:
 
@@ -86,8 +86,3 @@ Again, don't forget to merge the ROOT files:
 You can generate the ROC, pt, eta and pilup curves with this script:
 
 * `python make_plots.py`
-
-Finally, it is time to make some slides out of it. Just hope you have all the required TeXLive packages installed:
-
-* `python make_slides.py`
-* `pdflatex slides_<tag of your submit version>.tex`

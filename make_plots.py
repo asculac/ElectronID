@@ -3,6 +3,8 @@ import os
 from config import cfg
 import numpy as np
 from sklearn import metrics
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import matplotlib.gridspec as gridspec
@@ -84,8 +86,8 @@ def load_df(rootfile, branches, entrystop=None):
 # Set folders #
 #=============#
 
-plot_dir   =  'plots/4Elisa'
-#plot_dir   = join("plots", cfg['submit_version'])
+#plot_dir   =  'plots/4Elisa'
+plot_dir   = join("plots", cfg['submit_version'])
 ntuple_dir = cfg['ntuple_dir'] + '/' + cfg['submit_version']
 rootfile   = ntuple_dir + '/test.root'
 
@@ -106,10 +108,11 @@ if not os.path.exists(join(plot_dir, "nvtx")):
 # Enable or disable performance plots #
 #=====================================#
 
-ROC    = True
+ROC    = False
 turnon = False
 etaeff = False
-nvtx   = False
+nvtx = False
+discr= True
 
 #nmax = 2000
 #nmax = 2000000
@@ -138,11 +141,11 @@ roccolors[1] = '#0f4da5'
 
 refcolors = ['#17becf'] * 3 + ['#bcbd22'] * 3
 
-wps = ["Summer16IDISOHZZ", "Spring16HZZV1wpLoose"]
+wps = ["Autumn18IDISOHZZ"]
 
 plot_args = [
-        {"linewidth": 1, "color" : colors[0] , "markersize": 2, "marker": 'o', "linestyle": '-' , 'label': '2016 ID+ISO'  },
-        {"linewidth": 1, "color" : colors[1] , "markersize": 2, "marker": 'o', "linestyle": '-' , 'label': '2016 ID only'},
+        {"linewidth": 1, "color" : colors[0] , "markersize": 2, "marker": 'o', "linestyle": '-' , 'label': '2018 ID+ISO'  },
+        {"linewidth": 1, "color" : colors[1] , "markersize": 2, "marker": 'o', "linestyle": '-' , 'label': '2018 ID only'},
         {"linewidth": 1, "color" : colors[2] , "markersize": 2, "marker": 'o', "linestyle": '-' , 'label': '2017 ID+ISO V2'},
         ]
 
@@ -155,7 +158,7 @@ for i in range(len(plot_args)):
 plot_args = [plot_args, plot_args_bkg]
 
 roc_curves = [
-              ("2016", "Summer16IdIsoRawVals", "2016 ID+ISO"),
+              ("2018", "Autumn18IdIsoBoRawVals", "2018 ID+ISO"),
 #              ("2016", "Spring16HZZV1RawVals", "2016 ID after ISO"),
 #              ("2017", "Fall17IsoV2RawVals",   "2017 ID+ISO V2"),              
              ]
@@ -203,16 +206,16 @@ if ROC:
 
             print("[INFO] Processing {0} {1}...".format(location, ptrange))
 
-            branches = ["Summer16IdIsoVals", "Spring16HZZV1Vals", "Summer16IdIsoRawVals", "Spring16HZZV1RawVals", "Fall17IsoV2RawVals", "matchedToGenEle"]
+            branches = ["Autumn18IdIsoBoVals", "Autumn18IdIsoBoRawVals", "Fall17IsoV2RawVals", "matchedToGenEle"]
             df = load_df(rootfile, branches, entrystop=nmax)
-            df = df.query(cfg["trainings"]["Summer_16_ID_ISO"]["_".join([location, ptrange])]["cut"])
+            df = df.query(cfg["trainings"]["Autumn_18_ID_ISO"]["_".join([location, ptrange])]["cut"])
 
 #            ax1, ax2, axes = create_axes(yunits=3)
             ax1, axes = create_axes(yunits=3)
 
             xmin = 70
 
-            yref, xref, _ = metrics.roc_curve(df["y"] == 1, df["Spring16HZZV1RawVals"])
+            yref, xref, _ = metrics.roc_curve(df["y"] == 1, df["Autumn18IdIsoBoRawVals"])
             xref = xref * 100
             yref = yref * 100
 
@@ -220,6 +223,29 @@ if ROC:
             for yr, cl, lbl in roc_curves:
 
                 y, x, _ = metrics.roc_curve(df["y"] == 1, df[cl])
+
+                ##check the bckg eff
+                #f = open("sig_bck_eff.txt", "x")
+                if ptrange == "5":
+                    if location == 'EB1':
+                        print("EB1_5 signal eff: 0.816 ")
+                        print("EB1_5 background eff: ", np.take(y[np.where((x > 0.816) & (x < 0.817))],0))
+                    elif location == 'EB2':
+                        print("EB2_5 signal eff: 0.803 ")
+                        print("EB2_5 background eff: ", np.take(y[np.where((x > 0.803) & (x < 0.804))],0))
+                    elif location == 'EE':
+                        print("EE_5 signal eff: 0.743 ")
+                        print("EE_5 background eff: ", np.take(y[np.where((x > 0.743) & (x < 0.744))],0))
+                elif ptrange == "10":
+                    if location == 'EB1':
+                        print("EB1_10 signal eff: 0.974 ")
+                        print("EB1_10 background eff: ", np.take(y[np.where((x > 0.974) & (x < 0.975))],0))
+                    elif location == 'EB2':
+                        print("EB2_10 signal eff: 0.966 ")
+                        print("EB2_10 background eff: ", np.take(y[np.where((x > 0.966) & (x < 0.967))],0))
+                    elif location == 'EE':
+                        print("EE_10 signal eff: 0.966 ")
+                        print("EE_10 background eff: ", np.take(y[np.where((x > 0.966) & (x < 0.967))],0))
                 x = x * 100
                 y = y * 100
 
@@ -244,11 +270,11 @@ if ROC:
 
             ax1.yaxis.set_major_formatter(FormatStrFormatter("%.0f"))
 
-            plt.savefig(join(plot_dir, "roc/2016_{0}_{1}.pdf".format(location, ptrange)), bbox_inches='tight')
-            plt.savefig(join(plot_dir, "roc/2016_{0}_{1}.eps".format(location, ptrange)), bbox_inches='tight')
+            plt.savefig(join(plot_dir, "roc/2018_{0}_{1}.pdf".format(location, ptrange)), bbox_inches='tight')
+            plt.savefig(join(plot_dir, "roc/2018_{0}_{1}.eps".format(location, ptrange)), bbox_inches='tight')
 #            plt.savefig(join(plot_dir, "roc/2017_{0}_{1}.png".format(location, ptrange)), bbox_inches='tight')
-            os.system("convert -density 150 -quality 100 " + join(plot_dir, "roc/2016_{0}_{1}.eps".format(location, ptrange)) + " "
-                                                           + join(plot_dir, "roc/2016_{0}_{1}.png".format(location, ptrange)))
+            os.system("convert -density 150 -quality 100 " + join(plot_dir, "roc/2018_{0}_{1}.eps".format(location, ptrange)) + " "
+                                                           + join(plot_dir, "roc/2018_{0}_{1}.png".format(location, ptrange)))
 
             plt.close()
 
@@ -335,6 +361,36 @@ if turnon:
             plt.savefig(join(plot_dir, "turnon/2017_{0}_{1}.png".format(location, wplabel)), bbox_inches='tight')
 
             plt.close()
+####
+# signal background distribution
+###
+
+if discr:
+    print("Making discriminant histo.. ")
+   
+    branches = wps + ["Autumn18IdIsoBoVals", "Autumn18IdIsoBoRawVals", "matchedToGenEle"]
+
+    for idname in cfg["trainings"]:
+        for training_bin in cfg["trainings"][idname]:
+
+            df = load_df(rootfile, branches, entrystop=nmax)
+            df = df.query(cfg["trainings"][idname][training_bin]["cut"])  #cut for bins pT and eta
+            
+            sig = df.query("y == 1")
+            bkg = df.query("y == 0")
+
+    
+            #sig.hist(column="Summer16IdIsoBoRawVals",bins=100, alpha=0.7)
+            #bkg.hist(column="Summer16IdIsoBoRawVals",bins=100, alpha=0.7)
+            #plt.ylim([0,2000000])
+            fig = plt.figure(figsize=(10.4, 8.8))
+            plt.title("2018 Ana")
+            #plt.yscale("log")
+            plt.hist([sig["Autumn18IdIsoBoRawVals"], bkg["Autumn18IdIsoBoRawVals"]], bins=50, label=['signal', 'background'], alpha=0.7)
+            plt.legend(loc="upper right", ncol=1)
+            plt.savefig(join(plot_dir, "sig_bckg_{0}.png".format(training_bin)), bbox_inches='tight')
+            plt.close()
+
 #####
 # eta
 #####

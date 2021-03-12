@@ -1,4 +1,4 @@
-from CRABClient.UserUtilities import config, getUsernameFromSiteDB
+from CRABClient.UserUtilities import config
 from config import cfg
 import sys
 import argparse

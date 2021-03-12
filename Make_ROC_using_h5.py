@@ -3,6 +3,8 @@ import os
 from config import cfg
 import numpy as np
 from sklearn import metrics
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import matplotlib.gridspec as gridspec
@@ -79,8 +81,8 @@ for i in range(len(plot_args)):
 plot_args = [plot_args, plot_args_bkg]
 
 roc_curves = [
-              ("2016", "bdt_score_default", "ID+ISO XGBoost"),
-              ("2016", "bdt_score_optimized", "ID+ISO XGBoost + BO")
+              ("2018", "bdt_score_default", "ID+ISO XGBoost"),
+              ("2018", "bdt_score_optimized", "ID+ISO XGBoost + BO")
              ]
 
 roc_plot_args = {
@@ -124,15 +126,37 @@ if ROC:
 
          print("processing {0} {1}...".format(location, ptrange))
 
-         h5_file = h5_dir + "/Summer_16_ID_ISO/" + location + "_" + ptrange + '/pt_eta_score.h5'
+         h5_file = h5_dir + "/Autumn_18_ID_ISO/" + location + "_" + ptrange + '/pt_eta_score.h5'
             
          df = load_df(h5_file)
 
          ax1, ax2, axes = create_axes(yunits=3)
 
-         xmin = 70
+         xmin = 60
 
-         yref, xref, _ = metrics.roc_curve(df["y"] == 1, df["bdt_score_default"])
+         yref, xref, thres = metrics.roc_curve(df["y"] == 1, df["bdt_score_default"])
+
+         #efikasnosti za Markov cut
+         if ptrange == "5":
+                    if location == 'EB1':
+                        print("EB1_5 signal eff: ",  xref[np.abs(thres-1.44949897825).argmin()])
+                        print("EB1_5 background eff: ", yref[np.abs(thres-1.44949897825).argmin()])
+                    elif location == 'EB2':
+                        print("EB2_5 signal eff: ",  xref[np.abs(thres-1.53375297951).argmin()])
+                        print("EB2_5 background eff: ", yref[np.abs(thres-1.53375297951).argmin()])
+                    elif location == 'EE':
+                        print("EE_5 signal eff: ",  xref[np.abs(thres-1.74390214136).argmin()])
+                        print("EE_5 background eff: ", yref[np.abs(thres-1.74390214136).argmin()])
+         elif ptrange == "10":
+                    if location == 'EB1':
+                        print("EB1_5 signal eff: ",  xref[np.abs(thres-0.042431655398).argmin()])
+                        print("EB1_5 background eff: ", yref[np.abs(thres-0.042431655398).argmin()])
+                    elif location == 'EB2':
+                        print("EB1_5 signal eff: ",  xref[np.abs(thres-0.00473387826322).argmin()])
+                        print("EB1_5 background eff: ", yref[np.abs(thres-0.00473387826322).argmin()])
+                    elif location == 'EE':
+                        print("EB1_5 signal eff: ",  xref[np.abs(thres+0.699787591498).argmin()])
+                        print("EB1_5 background eff: ", yref[np.abs(thres+0.699787591498).argmin()])
          xref = xref * 100
          yref = yref * 100
 
@@ -163,9 +187,9 @@ if ROC:
 
          ax1.yaxis.set_major_formatter(FormatStrFormatter("%.0f"))
 
-         plt.savefig(join(plot_dir, "ROC_h5/2016_{0}_{1}.pdf".format(location, ptrange)), bbox_inches='tight')
-         plt.savefig(join(plot_dir, "ROC_h5/2016_{0}_{1}.eps".format(location, ptrange)), bbox_inches='tight')
-         os.system("convert -density 150 -quality 100 " + join(plot_dir, "ROC_h5/2016_{0}_{1}.eps".format(location, ptrange)) + " "
-                                                        + join(plot_dir, "ROC_h5/2016_{0}_{1}.png".format(location, ptrange)))
+         plt.savefig(join(plot_dir, "ROC_h5/2018_{0}_{1}.pdf".format(location, ptrange)), bbox_inches='tight')
+         plt.savefig(join(plot_dir, "ROC_h5/2018_{0}_{1}.eps".format(location, ptrange)), bbox_inches='tight')
+         os.system("convert -density 150 -quality 100 " + join(plot_dir, "ROC_h5/2018_{0}_{1}.eps".format(location, ptrange)) + " "
+                                                        + join(plot_dir, "ROC_h5/2018_{0}_{1}.png".format(location, ptrange)))
 
          plt.close()

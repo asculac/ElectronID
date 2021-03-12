@@ -13,27 +13,28 @@ cfg = {}
 
 cfg['ntuplizer_cfg'] = cmssw_base + '/src/RecoEgamma/ElectronIdentification/python/Training/ElectronMVANtuplizer_cfg.py'
 
-cfg['storage_site'] = 'T2_FR_GRIF_LLR'
-cfg["submit_version"] = "DY_2016_5_12_2018"
+cfg['storage_site'] = 'T3_CH_CERNBOX'
+cfg["submit_version"] = "DY_2018_22_02_2021"
 # Location of CRAB output files
-cfg["crab_output_dir"] = '/store/user/mkovac/Egamma/%s' % cfg["submit_version"]
+cfg["crab_output_dir"] = '/store/user/asculac/Egamma/%s' % cfg["submit_version"]
 cfg["crab_output_dir_full"] = "/dpm/in2p3.fr/home/cms/trivcat%s" % cfg["crab_output_dir"]
 # Where to store the ntuples and dmatrices
-cfg["ntuple_dir"] = "/data_CMS/cms/mkovac/MVA_trees/Data/EGamma/"
-cfg['dmatrix_dir'] = "/home/llr/cms/kovac/CMS/RUN_2/Data/EGamma/"
+cfg["ntuple_dir"] = "/data_CMS/cms/asculac/MVA_trees/Data/EGamma/"
+cfg['dmatrix_dir'] = "/data_CMS/cms/asculac/MVA_trees/Data/EGamma/" 
 cfg['out_dir'] = "out"
 cfg['cmssw_dir'] = "cmssw"
 
 # The sample used for training and evaluating the xgboost classifier.
-cfg["train_eval_sample"] = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/MINIAODSIM'
-cfg["train_eval_sample_request_name"] = 'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-train'
+
+cfg["train_eval_sample"] = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'
+cfg["train_eval_sample_request_name"] = 'DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8-train'
 
 # The fraction of this sample used for training.
 cfg["train_size"] = 0.75
 
 # The sample used for unbiased testing (performance plots).
-cfg["test_sample"] = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/MINIAODSIM'
-cfg["test_sample_request_name"] = 'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-test'
+cfg["test_sample"] = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM'
+cfg["test_sample_request_name"] = 'DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8-test'
 
 cfg["selection_base"] = "genNpu > 1"
 cfg["selection_sig"]  = "matchedToGenEle == 1"
@@ -74,40 +75,40 @@ variables_iso_ee   = variables_noiso_ee + variables_iso_only
 #     - list of variables to use
 
 cfg["trainings"] = {}
-cfg["trainings"]["Summer_16_ID_ISO"] = {}
+cfg["trainings"]["Autumn_18_ID_ISO"] = {}
 
 # Iso ID
-cfg["trainings"]["Summer_16_ID_ISO"]["EB1_5"] = {
+cfg["trainings"]["Autumn_18_ID_ISO"]["EB1_5"] = {
         "cut": "ele_pt < 10. & abs(scl_eta) < 0.800",
         "variables": variables_iso_eb,
         "label": r'EB1 5 - 5 < $p_T$ < 10 GeV, ($|\eta| < 0.8$)',
         }
 
-cfg["trainings"]["Summer_16_ID_ISO"]["EB2_5"] = {
+cfg["trainings"]["Autumn_18_ID_ISO"]["EB2_5"] = {
         "cut": "ele_pt < 10. & abs(scl_eta) >= 0.800 & abs(scl_eta) < 1.479",
         "variables": variables_iso_eb,
         "label": r'EB2 5 - 5 < $p_T$ < 10 GeV, ($|\eta| > 0.8$)',
         }
 
-cfg["trainings"]["Summer_16_ID_ISO"]["EB1_10"] = {
+cfg["trainings"]["Autumn_18_ID_ISO"]["EB1_10"] = {
         "cut": "ele_pt >= 10. & abs(scl_eta) < 0.800",
         "variables": variables_iso_eb,
         "label": r'EB1 10 - $p_T$ > 10 GeV, ($|\eta| < 0.8$)',
         }
 
-cfg["trainings"]["Summer_16_ID_ISO"]["EB2_10"] = {
+cfg["trainings"]["Autumn_18_ID_ISO"]["EB2_10"] = {
         "cut": "ele_pt >= 10. & abs(scl_eta) >= 0.800 & abs(scl_eta) < 1.479",
         "variables": variables_iso_eb,
         "label": r'EB2 10 - $p_T$ > 10 GeV, ($|\eta| > 0.8$)',
         }
 
-cfg["trainings"]["Summer_16_ID_ISO"]["EE_5"] = {
+cfg["trainings"]["Autumn_18_ID_ISO"]["EE_5"] = {
         "cut": "ele_pt < 10. & abs(scl_eta) >= 1.479",
         "variables": variables_iso_ee,
         "label": r'EE 5 - 5 < $p_T$ < 10 GeV',
         }
 
-cfg["trainings"]["Summer_16_ID_ISO"]["EE_10"] = {
+cfg["trainings"]["Autumn_18_ID_ISO"]["EE_10"] = {
         "cut": "ele_pt >= 10. & abs(scl_eta) >= 1.479",
         "variables": variables_iso_ee,
         "label": r'EE 10 - $p_T$ > 10 GeV',
@@ -131,7 +132,7 @@ cfg["trainings"]["Summer_16_ID_ISO"]["EE_10"] = {
 #wp80_target = []
 
 cfg["working_points"] = {}
-cfg["working_points"]["Summer_16_ID_ISO"] = {}
+cfg["working_points"]["Autumn_18_ID_ISO"] = {}
 
 #cfg["working_points"]["Fall17NoIsoV2"]["mvaEleID-Fall17-noIso-V2-wp90"] = {
 #        "categories": ["EB1_5", "EB2_5", "EE_5", "EB1_10", "EB2_10", "EE_10"],
@@ -179,10 +180,11 @@ cfg["working_points"]["Summer_16_ID_ISO"] = {}
 #        "match_boundary": True
 #        }
 
-cfg["working_points"]["Summer_16_ID_ISO"]["mvaEleID-Summer16-ID-ISO-HZZ"] = {
+cfg["working_points"]["Autumn_18_ID_ISO"]["mvaEleID-Autumn18-ID-ISO-HZZ"] = {
     "type":           "constant_cut_sig_eff_targets",
-    "categories":     ["EB1_5", "EB2_5", "EE_5", "EB1_10", "EB2_10", "EE_10"],
-    "targets":        [0.8164452295491703, 0.803096754509744, 0.7437667128195914, 0.9744637118403502, 0.9668337528255658, 0.9662211869474129], # Spring16HZZ, combinedIso < 0.35
+    "categories": ["EB1_5", "EB2_5", "EE_5", "EB1_10", "EB2_10", "EE_10"],
+    #"targets":        [0.8104, 0.793, 0.7297, 0.971, 0.963, 0.957],
+    "targets":        [0.8164452295491703, 0.803096754509744, 0.7437667128195914, 0.9744637118403502, 0.9668337528255658, 0.9662211869474129],
     "match_boundary": False
     }
 
@@ -192,11 +194,11 @@ cfg["working_points"]["Summer_16_ID_ISO"]["mvaEleID-Summer16-ID-ISO-HZZ"] = {
 #####################
 
 cfg["cmssw_cff"] = {}
-cfg["cmssw_cff"]["Summer_16_ID_ISO"] = {}
+cfg["cmssw_cff"]["Autumn_18_ID_ISO"] = {}
 
-cfg["cmssw_cff"]["Summer_16_ID_ISO"] = {
-        "producer_config_name": "mvaEleID_Summer16_ID_ISO_BO_producer_config",
-        "file_name": "mvaElectronID_Summer16_ID_ISO_BO_cff.py",
-        "mvaTag": "Summer16IdIsoBo",
+cfg["cmssw_cff"]["Autumn_18_ID_ISO"] = {
+        "producer_config_name": "mvaEleID_Autumn18_ID_ISO_BO_producer_config",
+        "file_name": "mvaElectronID_Autumn18_ID_ISO_BO_cff.py",
+        "mvaTag": "Autumn18IdIsoBo",
         "mvaClassName": "ElectronMVAEstimatorRun2",
         }

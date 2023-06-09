@@ -27,10 +27,10 @@ Adapt the configuration in `config.py` to your needs.
 
 ### Step 1 - Make training Ntuples
 
-Start by setting up the CMSSW area e.g. CMSSW_10_3_1:
+Start by setting up the CMSSW area e.g. CMSSW_10_6_20:
 
-* `cmsrel CMSSW_10_3_1`
-* `cd CMSSW_10_3_1/src`
+* `cmsrel CMSSW_10_6_20`
+* `cd CMSSW_10_6_20/src`
 * `cmsenv`
 
 Checkout the needed packages:

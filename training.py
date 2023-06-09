@@ -1,4 +1,4 @@
-from config import cfg
+from config_noiso import cfg
 import os
 import numpy as np
 from os.path import join
@@ -80,7 +80,7 @@ for idname in cfg["trainings"]:
 
         print("Saving reduced data frame...")
         # Create a data frame with bdt outputs and kinematics to calculate the working points
-        df_reduced = df.loc[y_test.index, ["ele_pt", "scl_eta", "y", "Spring16HZZV1RawVals", "genNpu"]]
+        df_reduced = df.loc[y_test.index, ["ele_pt", "scl_eta", "y", "Summer17ULHZZV1RawVals", "genNpu"]]
         df_reduced["bdt_score_default"]   = preds_default
         df_reduced["bdt_score_optimized"] = preds_optimized
         df_reduced.to_hdf(join(out_dir,'pt_eta_score.h5'), key='pt_eta_score')

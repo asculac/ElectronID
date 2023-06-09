@@ -1,4 +1,4 @@
-from config_noiso import cfg
+from config import cfg
 import os
 import numpy as np
 from os.path import join
